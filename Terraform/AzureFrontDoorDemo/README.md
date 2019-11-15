@@ -10,7 +10,7 @@ Azure Front door <br />
 
 The infrastructure can be visualized as such: <br />
 
-![Diagram](https://github.com/bcounts1/AzureStuff/blob/master/content/images/ADFdemoDiagram.JPG) <br />
+![Diagram](https://github.com/bcounts1/AzureStuff/blob/master/content/images/AFDdemoDiagram.JPG) <br />
 <br />
 **
 **Additional Info:**  <br />
