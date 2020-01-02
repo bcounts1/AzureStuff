@@ -4,12 +4,13 @@ param (
 Set-AzContext -Subscription $subscription
 $virtualnetworks = get-azvirtualnetwork 
 
-$obj = foreach ($network in $virtualnetworks){
+foreach ($network in $virtualnetworks){
     $network.subnet | %{get-azvirtualnetworksubnetconfig -Name $_.Name -VirtualNetwork $network | `
-         select @{n="VNET Name";e={$network.Name}}, `
-                @{n="Subnet Name";e={$_.Name}}, `
-                @{n="routetable";e={$_.routetable.id}}, `
-                networksecuritygroup}
+         select @{n="VNETName";e={$network.Name}}, `
+                @{n="SubnetName";e={$_.Name}}, `
+                @{n="RouteTable";e={(get-AzResource -ResourceID $_.routetable.id).Name}}, `
+                @{n="NetworkSecurityGroup";e={(Get-AzResource -ResourceId $_.networksecuritygroup.id).Name}}
     
+            }
+        
 }
-Return $obj
