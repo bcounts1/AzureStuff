@@ -1,5 +1,5 @@
 # Subnet Matrix Script
-A simple script that allows you to export NSG and UDR config across every subnet in very VNET within a subscription. This is helpful to keep track of what UDRs and NSGs are in use within each Virtual Network
+A simple script that allows you to audit NSG and UDR config across every subnet in very VNET within a subscription. The output can be exported into a spreadsheet or a database for tracking purposes.
 
 **Example:**
 .\get-SubnetUDR.ps1 -subscription MySubscription
