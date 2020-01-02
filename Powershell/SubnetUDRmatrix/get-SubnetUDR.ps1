@@ -6,8 +6,8 @@ $virtualnetworks = get-azvirtualnetwork
 
 foreach ($network in $virtualnetworks){
     $network.subnet | %{get-azvirtualnetworksubnetconfig -Name $_.Name -VirtualNetwork $network | `
-         select @{n="VNETName";e={$network.Name}}, `
-                @{n="SubnetName";e={$_.Name}}, `
+         select @{n="VNET";e={$network.Name}}, `
+                @{n="Subnet";e={$_.Name}}, `
                 @{n="RouteTable";e={(get-AzResource -ResourceID $_.routetable.id).Name}}, `
                 @{n="NetworkSecurityGroup";e={(Get-AzResource -ResourceId $_.networksecuritygroup.id).Name}}
     

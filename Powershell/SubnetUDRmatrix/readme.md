@@ -5,7 +5,7 @@ A simple script that allows you to audit NSG and UDR config across every subnet 
 .\get-SubnetUDR.ps1 -subscription MySubscription
 
 Outputs:
-- VNET Name
-- Subnet Name
+- VNET
+- Subnet
 - RoutTable
 - NetworkSecurityGroup
