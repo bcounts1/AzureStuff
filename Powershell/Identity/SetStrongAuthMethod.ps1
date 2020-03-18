@@ -1,4 +1,4 @@
-Param(
+param(
     $userPrincipalName
 )
 
