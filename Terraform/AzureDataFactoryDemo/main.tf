@@ -111,13 +111,13 @@ resource "azurerm_subnet_network_security_group_association" "assc2" {
 #configure Vnet Integrated Data Factory
 
 resource "azurerm_data_factory" "lab" {
-  name                = "bgcadflabadf"
+  name                = "mytestadflabadf"
   location            = azurerm_resource_group.lab.location
   resource_group_name = azurerm_resource_group.lab.name
 }
 
 resource "azurerm_data_factory_integration_runtime_managed" "lab" {
-  name                = "bgcadflabir"
+  name                = "mytestadflabir"
   data_factory_name   = azurerm_data_factory.lab.name
   resource_group_name = azurerm_resource_group.lab.name
   location            = azurerm_resource_group.lab.location
@@ -133,7 +133,7 @@ resource "azurerm_data_factory_integration_runtime_managed" "lab" {
 #Configure Storage account
 
 resource "azurerm_storage_account" "lab" {
-  name                     = "bgcadflabsa"
+  name                     = "mytestadflabsa"
   resource_group_name      = azurerm_resource_group.lab.name
   location                 = azurerm_resource_group.lab.location
   account_tier             = "Standard"
@@ -143,7 +143,7 @@ resource "azurerm_storage_account" "lab" {
 }
 
 resource "azurerm_storage_data_lake_gen2_filesystem" "lab" {
-  name               = "bgcadflabdl1"
+  name               = "mytestadflabdl1"
   storage_account_id = azurerm_storage_account.lab.id
 
   properties = {
@@ -153,13 +153,13 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "lab" {
 
 #configure private endpoint for storage
 resource "azurerm_private_endpoint" "datalakeep" {
-  name                = "bgcadflabsape"
+  name                = "mytestbgcadflabsape"
   location            = azurerm_resource_group.lab.location
   resource_group_name = azurerm_resource_group.lab.name
   subnet_id           = azurerm_subnet.subnetA.id
 
   private_service_connection {
-    name                           = "bgcadflabpsc"
+    name                           = "mytestadflabpsc"
     private_connection_resource_id = azurerm_storage_account.lab.id
     subresource_names              = [ "dfs" ]
     is_manual_connection           = false
@@ -168,7 +168,7 @@ resource "azurerm_private_endpoint" "datalakeep" {
 
 #configure databricks workspace
 resource "azurerm_databricks_workspace" "lab" {
-  name                = "bgcadflabdatabricks1"
+  name                = "mytestadflabdatabricks1"
   resource_group_name = azurerm_resource_group.lab.name
   location            = azurerm_resource_group.lab.location
   sku                 = "standard"
