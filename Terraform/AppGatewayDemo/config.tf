@@ -1,5 +1,15 @@
+terraform {
+  required_providers {
+    azurerm = "~> 2.21"
+  }
+}
+
 provider "azurerm" {
-  version = "=1.28.0"
+  subscription_id = var.subscription_id
+  client_id = var.client_id
+  client_secret = var.client_secret
+  tenant_id = var.tenant_id
+  features {}
 }
 resource "azurerm_resource_group" "test" {
   name     = "AppGatewayDemo"
@@ -7,29 +17,29 @@ resource "azurerm_resource_group" "test" {
 }
 resource "azurerm_virtual_network" "test" {
   name                = "ApplicationVnet"
-  resource_group_name = "${azurerm_resource_group.test.name}"
-  location            = "${azurerm_resource_group.test.location}"
+  resource_group_name = azurerm_resource_group.test.name
+  location            = azurerm_resource_group.test.location
   address_space       = ["192.168.1.0/24"]
 }
 
 resource "azurerm_subnet" "frontend" {
   name                 = "AppGatewaySubnet"
-  resource_group_name  = "${azurerm_resource_group.test.name}"
-  virtual_network_name = "${azurerm_virtual_network.test.name}"
-  address_prefix       = "192.168.1.0/27"
+  resource_group_name  = azurerm_resource_group.test.name
+  virtual_network_name = azurerm_virtual_network.test.name
+  address_prefixes       = ["192.168.1.0/27"]
 }
 
 resource "azurerm_subnet" "backend" {
   name                 = "ApplicationSubnet"
-  resource_group_name  = "${azurerm_resource_group.test.name}"
-  virtual_network_name = "${azurerm_virtual_network.test.name}"
-  address_prefix       = "192.168.1.128/25"
+  resource_group_name  = azurerm_resource_group.test.name
+  virtual_network_name = azurerm_virtual_network.test.name
+  address_prefixes       = ["192.168.1.128/25"]
 }
 
 resource "azurerm_public_ip" "test" {
   name                = "AppGwyPIP1"
-  resource_group_name = "${azurerm_resource_group.test.name}"
-  location            = "${azurerm_resource_group.test.location}"
+  resource_group_name = azurerm_resource_group.test.name
+  location            = azurerm_resource_group.test.location
   sku                 = "Standard"
   allocation_method   = "Static"
 }
@@ -46,8 +56,8 @@ locals {
 
 resource "azurerm_application_gateway" "network" {
   name                = "Appgateway1"
-  resource_group_name = "${azurerm_resource_group.test.name}"
-  location            = "${azurerm_resource_group.test.location}"
+  resource_group_name = azurerm_resource_group.test.name
+  location            = azurerm_resource_group.test.location
 
   sku {
     name     = "WAF_V2"
@@ -63,25 +73,25 @@ resource "azurerm_application_gateway" "network" {
 
   gateway_ip_configuration {
     name      = "appGatewayIpConfig"
-    subnet_id = "${azurerm_subnet.frontend.id}"
+    subnet_id = azurerm_subnet.frontend.id
   }
 
   frontend_port {
-    name = "${local.frontend_port_name}"
+    name = local.frontend_port_name
     port = 80
   }
 
   frontend_ip_configuration {
-    name                 = "${local.frontend_ip_configuration_name}"
-    public_ip_address_id = "${azurerm_public_ip.test.id}"
+    name                 = local.frontend_ip_configuration_name
+    public_ip_address_id = azurerm_public_ip.test.id
   }
 
   backend_address_pool {
-    name = "${local.backend_address_pool_name}"
+    name = local.backend_address_pool_name
   }
 
   backend_http_settings {
-    name                  = "${local.http_setting_name}"
+    name                  = local.http_setting_name
     cookie_based_affinity = "Disabled"
     path                  = "/"
     port                  = 80
@@ -90,24 +100,24 @@ resource "azurerm_application_gateway" "network" {
   }
 
   http_listener {
-    name                           = "${local.listener_name}"
-    frontend_ip_configuration_name = "${local.frontend_ip_configuration_name}"
-    frontend_port_name             = "${local.frontend_port_name}"
+    name                           = local.listener_name
+    frontend_ip_configuration_name = local.frontend_ip_configuration_name
+    frontend_port_name             = local.frontend_port_name
     protocol                       = "Http"
   }
 
   request_routing_rule {
-    name                       = "${local.request_routing_rule_name}"
+    name                       = local.request_routing_rule_name
     rule_type                  = "Basic"
-    http_listener_name         = "${local.listener_name}"
-    backend_address_pool_name  = "${local.backend_address_pool_name}"
-    backend_http_settings_name = "${local.http_setting_name}"
+    http_listener_name         = local.listener_name
+    backend_address_pool_name  = local.backend_address_pool_name
+    backend_http_settings_name = local.http_setting_name
   }
 }
 resource "azurerm_virtual_machine_scale_set" "test" {
   name                = "AppFarm"
-  location            = "${azurerm_resource_group.test.location}"
-  resource_group_name = "${azurerm_resource_group.test.name}"
+  location            = azurerm_resource_group.test.location
+  resource_group_name = azurerm_resource_group.test.name
   upgrade_policy_mode  = "Manual"
   os_profile {
     computer_name_prefix = "appvm"
@@ -139,7 +149,7 @@ resource "azurerm_virtual_machine_scale_set" "test" {
     ip_configuration {
       name                                   = "TestIPConfiguration"
       primary                                = true
-      subnet_id                              = "${azurerm_subnet.backend.id}"
+      subnet_id                              = azurerm_subnet.backend.id
       application_gateway_backend_address_pool_ids = ["${azurerm_application_gateway.network.backend_address_pool[0].id}"]
     }
   }
