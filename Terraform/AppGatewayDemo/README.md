@@ -12,7 +12,7 @@ This terraform module sets up the following Resources
 **Application Gateway**: AppGateway1
 **VMSS**: AppFarm
 
-This will create a basic Application Gateway infrastructure that load balances Virtual Machine scaleset nodes with a public facing IP address. This is an HTTP configuration with the Scale Set nodes configured with a basic static web page that presents the host name. This can be used as a building block to configure more complex or advanced app gateway scenarios. 
+This will create a basic Application Gateway infrastructure that load balances VMSS nodes with a public facing IP address. This is an HTTP configuration with the Scale Set nodes configured with a basic static web page that presents the host name. This can be used as a building block to configure more complex App Gateway scenarios. 
 
 **Additional Info**:
 Application Gateway documentation - https://docs.microsoft.com/en-us/azure/application-gateway/overview
