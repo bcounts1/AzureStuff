@@ -1,9 +1,14 @@
-provider "azurerm" {
-    version = "=1.36.1"
+terraform {
+  required_providers {
+    azurerm = "~> 2.21"
+  }
 }
-variable "locations" {
-  description = "list of locations for deployment"
-  default = ["EastUS","CentralUS"]
+provider "azurerm" {
+  subscription_id = var.subscription_id
+  client_id = var.client_id
+  client_secret = var.client_secret
+  tenant_id = var.tenant_id
+  features {}
 }
 resource "azurerm_resource_group" "test" {
   count = length(var.locations) 
@@ -13,71 +18,71 @@ resource "azurerm_resource_group" "test" {
 resource "azurerm_virtual_network" "test" {
   name                = "ApplicationVnet${var.locations[count.index]}"
   count = length(var.locations)
-  resource_group_name = "${azurerm_resource_group.test[count.index].name}"
-  location            = "${azurerm_resource_group.test[count.index].location}"
+  resource_group_name = azurerm_resource_group.test[count.index].name
+  location            = azurerm_resource_group.test[count.index].location
   address_space       = ["192.168.1.0/24"]
 }
 resource "azurerm_subnet" "backend" {
   name                 = "ApplicationSubnet${var.locations[count.index]}"
   count = length(var.locations)
-  resource_group_name  = "${azurerm_resource_group.test[count.index].name}"
-  virtual_network_name = "${azurerm_virtual_network.test[count.index].name}"
-  address_prefix       = "192.168.1.128/25"
+  resource_group_name  = azurerm_resource_group.test[count.index].name
+  virtual_network_name = azurerm_virtual_network.test[count.index].name
+  address_prefixes       = ["192.168.1.128/25"]
 }
 resource "azurerm_public_ip" "test" {
   name                = "PublicIPForLB${var.locations[count.index]}"
   count = length(var.locations)
-  location            = "${azurerm_resource_group.test[count.index].location}"
-  resource_group_name = "${azurerm_resource_group.test[count.index].name}"
+  location            = azurerm_resource_group.test[count.index].location
+  resource_group_name = azurerm_resource_group.test[count.index].name
   allocation_method   = "Static"
 }
 
 resource "azurerm_lb" "test" {
   name                = "TestLoadBalancer${var.locations[count.index]}"
   count = length(var.locations)
-  location            = "${azurerm_resource_group.test[count.index].location}"
-  resource_group_name = "${azurerm_resource_group.test[count.index].name}"
+  location            = azurerm_resource_group.test[count.index].location
+  resource_group_name = azurerm_resource_group.test[count.index].name
 
   frontend_ip_configuration {
     name                 = "FDPublicIPAddress${var.locations[count.index]}"
-    public_ip_address_id = "${azurerm_public_ip.test[count.index].id}"
+    public_ip_address_id = azurerm_public_ip.test[count.index].id
   }
 }
 resource "azurerm_lb_backend_address_pool" "test" {
-  resource_group_name = "${azurerm_resource_group.test[count.index].name}"
+  resource_group_name = azurerm_resource_group.test[count.index].name
   count = length(var.locations)
-  loadbalancer_id     = "${azurerm_lb.test[count.index].id}"
+  loadbalancer_id     = azurerm_lb.test[count.index].id
   name                = "BackEndAddressPool${var.locations[count.index]}"
 }
 resource "azurerm_lb_probe" "test" {
   count = length(var.locations)
-  resource_group_name = "${azurerm_resource_group.test[count.index].name}"
-  loadbalancer_id     = "${azurerm_lb.test[count.index].id}"
+  resource_group_name = azurerm_resource_group.test[count.index].name
+  loadbalancer_id     = azurerm_lb.test[count.index].id
   name                = "http-running-probe${var.locations[count.index]}"
   port                = 80
 }
 resource "azurerm_lb_rule" "test" {
   count = length(var.locations)
-  resource_group_name            = "${azurerm_resource_group.test[count.index].name}"
-  loadbalancer_id                = "${azurerm_lb.test[count.index].id}"
+  resource_group_name            = azurerm_resource_group.test[count.index].name
+  loadbalancer_id                = azurerm_lb.test[count.index].id
   name                           = "LBRule${var.locations[count.index]}"
   protocol                       = "Tcp"
   frontend_port                  = 80
   backend_port                   = 80
   frontend_ip_configuration_name = "FDPublicIPAddress${var.locations[count.index]}"
-  backend_address_pool_id        = "${azurerm_lb_backend_address_pool.test[count.index].id}"
-  probe_id                       = "${azurerm_lb_probe.test[count.index].id}"
+  backend_address_pool_id        = azurerm_lb_backend_address_pool.test[count.index].id
+  probe_id                       = azurerm_lb_probe.test[count.index].id
 }
 resource "azurerm_virtual_machine_scale_set" "test" {
   name                = "AppFarm${var.locations[count.index]}"
   count = length(var.locations)
-  location            = "${azurerm_resource_group.test[count.index].location}"
-  resource_group_name = "${azurerm_resource_group.test[count.index].name}"
+  location            = azurerm_resource_group.test[count.index].location
+  resource_group_name = azurerm_resource_group.test[count.index].name
   upgrade_policy_mode  = "Manual"
   os_profile {
-    computer_name_prefix = "${azurerm_resource_group.test[count.index].location}"
+    computer_name_prefix = azurerm_resource_group.test[count.index].location
     admin_username       = "adminuser"
-    admin_password       = "WelcomeWelcome123"
+    admin_password       = "PasswordPassword123"
 }
 
    sku {
@@ -104,7 +109,7 @@ resource "azurerm_virtual_machine_scale_set" "test" {
     ip_configuration {
       name                                   = "TestIPConfiguration"
       primary                                = true
-      subnet_id                              = "${azurerm_subnet.backend[count.index].id}"
+      subnet_id                              = azurerm_subnet.backend[count.index].id
       load_balancer_backend_address_pool_ids = ["${azurerm_lb_backend_address_pool.test[count.index].id}"]
     }
   }
@@ -129,8 +134,8 @@ resource "random_string" "random" {
 }
 resource "azurerm_frontdoor" "example" {
   name                                         = "${random_string.random.result}FDtest"
-  location                                     = "${azurerm_resource_group.test[0].location}"
-  resource_group_name                          = "${azurerm_resource_group.test[0].name}"
+  location                                     = "Global"
+  resource_group_name                          = azurerm_resource_group.test[0].name
   enforce_backend_pools_certificate_name_check = false
 
   routing_rule {
