@@ -1,4 +1,4 @@
-## Hub and Spoke w/ Azure Firewall mediation pattern
+## Hub and Spoke w/ Azure Firewall Mediation Pattern
 This terraform module creates the following resources: <br />
 3x Virtual Networks <br />
 2x Resource Groups <br />
