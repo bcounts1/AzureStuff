@@ -1,8 +1,8 @@
-#declared provider variables
-variable "subscription_id" {}
-variable "client_id" {}
-variable "client_secret" {}
-variable "tenant_id" {}
+terraform {
+  required_providers {
+    azurerm = "~> 2.21"
+  }
+}
 
 provider "azurerm" {
   subscription_id = var.subscription_id
@@ -11,11 +11,6 @@ provider "azurerm" {
   tenant_id = var.tenant_id
   features {}
 }
-
-terraform {
-    backend "azurerm" {}
-}
-
 resource "azurerm_resource_group" "lab" {
   name     = "adflabrg"
   location = "east us"
