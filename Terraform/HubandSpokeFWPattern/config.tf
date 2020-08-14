@@ -5,10 +5,10 @@ terraform {
 }
 
 provider "azurerm" {
-  subscription_id = var.subscription_id
-  client_id = var.client_id
-  client_secret = var.client_secret
-  tenant_id = var.tenant_id
+  subscription_id       = var.subscription_id
+  client_id             = var.client_id
+  client_secret         = var.client_secret
+  tenant_id             = var.tenant_id
   features {}
 }
 
@@ -78,7 +78,7 @@ resource "azurerm_subnet" "spokesubnet" {
     }
 
     name                    = each.value.subnet_name
-    address_prefixes          = each.value.address_prefixes
+    address_prefixes        = each.value.address_prefixes
     virtual_network_name    = each.value.network_name
     resource_group_name     = azurerm_resource_group.spokerg.name
 
@@ -93,17 +93,17 @@ resource "azurerm_network_interface" "nic" {
     } 
 
     name = "${each.value["name"]}_${each.value["virtual_network_name"]}_nic" 
-    location = azurerm_resource_group.spokerg.location
-    resource_group_name = azurerm_resource_group.spokerg.name
+    location                = azurerm_resource_group.spokerg.location
+    resource_group_name     = azurerm_resource_group.spokerg.name
 
     ip_configuration {
-        name        = "internal"
-        subnet_id   = each.value["id"]
+        name                = "internal"
+        subnet_id           = each.value["id"]
         private_ip_address_allocation = "Dynamic"
     }
-    tags            = {
-        virtualNetwork = each.value["virtual_network_name"]
-        subnet         = each.value["name"] 
+    tags                    = {
+        virtualNetwork      = each.value["virtual_network_name"]
+        subnet              = each.value["name"] 
     }
 
     depends_on = [azurerm_subnet.spokesubnet]
@@ -115,17 +115,17 @@ resource "azurerm_windows_virtual_machine" "vm" {
 
   }
 
-  name                = "testvm-${regex("[spoke]....\\d", each.value.tags["virtualNetwork"])}"
-  resource_group_name = azurerm_resource_group.spokerg.name
-  location            = azurerm_resource_group.spokerg.location
-  size                = "Standard_F2"
-  admin_username      = "adminuser"
-  admin_password      = "PasswordPassword123"
-  network_interface_ids = [each.value["id"]]
+  name                      = "testvm-${regex("[spoke]....\\d", each.value.tags["virtualNetwork"])}"
+  resource_group_name       = azurerm_resource_group.spokerg.name
+  location                  = azurerm_resource_group.spokerg.location
+  size                      = "Standard_F2"
+  admin_username            = "adminuser"
+  admin_password            = "PasswordPassword123"
+  network_interface_ids     = [each.value["id"]]
 
   os_disk {
-    caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    caching                 = "ReadWrite"
+    storage_account_type    = "Standard_LRS"
   }
 
   source_image_reference {
