@@ -23,7 +23,7 @@ This pattern invokes a common Hub and Spoke scenario wherein an organization wan
 
 **New Terraform Functionality**
 
-This terraform makes use some of the more recent additions to terraform such as the "For_Each" loop to dynamically construct resources. You can find out more on this here: <br />
+This terraform makes use of the more recent additions to terraform, such as the "For_Each" loop, to dynamically construct resources. You can find out more on this here: <br />
 [https://learn.hashicorp.com/tutorials/terraform/for-each](https://learn.hashicorp.com/tutorials/terraform/for-each)
 
 
