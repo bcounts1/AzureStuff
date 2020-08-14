@@ -10,5 +10,5 @@
 # Ignore .Terraform folder
 *.terraform
 
-# Ignore .DS_Store folder
-*.DS_Store
+# Ignore .DS_Store file
+.DS_Store
