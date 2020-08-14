@@ -14,9 +14,9 @@ variable "location" {
 # declare spoke networks
 variable "spoke_networks" {
     type = map(object({
-        name            = string
-        prefix          = string
-        address_space   = list(string)
+        name                    = string
+        prefix                  = string
+        address_space           = list(string)
         subnets = map(object({
             name                = string
             address_prefixes    = list(string)
@@ -60,25 +60,25 @@ variable "spoke_networks" {
 # declare Hub subnets
 variable "hub_subnets" {
     type = map(object({
-        name        = string
-        address_prefixes = list(string)
-        isDefault   = bool
+        name                = string
+        address_prefixes    = list(string)
+        isDefault           = bool
     }))
 
     default = {
         subnet1 = {
-            name = "AzureFirewallSubnet"
-            address_prefixes = ["10.1.1.0/24"]
-            isDefault = false
+            name                = "AzureFirewallSubnet"
+            address_prefixes    = ["10.1.1.0/24"]
+            isDefault           = false
         }
         subnet2 = {
-            name = "AzureBastionSubnet"
-            address_prefixes = ["10.1.2.0/24"]
-            isDefault = false
+            name                = "AzureBastionSubnet"
+            address_prefixes    = ["10.1.2.0/24"]
+            isDefault           = false
         }
         subnet3 = {
             name = "default"
-            address_prefixes = ["10.1.3.0/24"]
+            address_prefixes    = ["10.1.3.0/24"]
             isDefault = true
         }
     }
@@ -90,7 +90,7 @@ variable "nfirewall_rules" {
         priority                = number
         action                  = string
         rule_name               = string
-        source_addresses       = list(string)
+        source_addresses        = list(string)
         destination_ports       = list(string)
         destination_addresses   = list(string)
         protocols               = list(string)
