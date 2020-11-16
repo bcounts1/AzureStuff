@@ -129,8 +129,8 @@ resource "azurerm_virtual_machine" "example" {
 
   os_profile {
     computer_name  = "winhost01"
-    admin_username = "exampleadmin"
-    admin_password = "Password1234!"
+    admin_username = var.osusername
+    admin_password = var.ospassword
   }
 
   os_profile_windows_config {
@@ -146,8 +146,8 @@ resource "azurerm_mssql_virtual_machine" "example" {
   r_services_enabled = true
     sql_connectivity_port            = 1433
   sql_connectivity_type            = "PRIVATE"
-  sql_connectivity_update_password = "Password1234!"
-  sql_connectivity_update_username = "sqllogin"
+  sql_connectivity_update_password = var.sqlpassword
+  sql_connectivity_update_username = var.sqlusername
 
   auto_patching {
     day_of_week                            = "Sunday"
