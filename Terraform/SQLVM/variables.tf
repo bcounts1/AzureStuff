@@ -9,7 +9,6 @@ variable "location" {
 
 variable "prefix" {
   description = "The prefix used for all resources used by this NetApp Account"
-  default = "BGC"
 }
 variable "osusername"{}
 variable "ospassword"{}
