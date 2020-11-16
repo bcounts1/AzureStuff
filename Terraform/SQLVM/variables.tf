@@ -8,7 +8,7 @@ variable "location" {
 }
 
 variable "prefix" {
-  description = "The prefix used for all resources used by this NetApp Account"
+  description = "The prefix used for resources"
 }
 variable "osusername"{}
 variable "ospassword"{}
