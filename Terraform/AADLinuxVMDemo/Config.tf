@@ -127,9 +127,14 @@ resource "azurerm_subnet_network_security_group_association" "example" {
   network_security_group_id = azurerm_network_security_group.example.id
 }
 
+data "azurerm_public_ip" "example" {
+  name                = azurerm_public_ip.vmpip.name
+  resource_group_name = azurerm_linux_virtual_machine.example.resource_group_name
+}
+
 output "tls_private_key" {
     value = tls_private_key.example.private_key_pem
 }
 output "public_ip_address" {
-    value = azurerm_public_ip.vmpip.ip_address
+    value = data.azurerm_public_ip.example.ip_address
 }
