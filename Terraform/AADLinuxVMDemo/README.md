@@ -17,7 +17,7 @@ The key to enabling this feature is the installation of the **AADLoginForLinux**
 
 1.) Enable RBAC access to a user or group to the **Virtual Machine Administrator Login** or **Virtual Machine User Login** roles.
 
-2.) From your SSH client, connect with the following string: **ssh UPN@PublicIPAddress
+2.) From your SSH client, connect with the following string: **ssh UPN@PublicIPAddress**
 
 3.) You will be prompted to sign in with a device login code at https://microsoft.com/devicelogin 
 
