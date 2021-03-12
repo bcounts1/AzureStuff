@@ -4,9 +4,9 @@ The purpose of this demo is to easily experiment with the **preview** AAD authen
 
 ## Whats deployed in this demo?
 
-1x Vnet
-2x Subnets
-1x Public IP address
-1x Linux VM
-1x NSG
-1x RSA key
+1x Vnet \
+2x Subnets \
+1x Public IP address \
+1x Linux VM \
+1x NSG \
+1x RSA key \
